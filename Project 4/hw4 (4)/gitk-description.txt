@@ -1,0 +1,12 @@
+The first subwindow (upper left) shows the commit and a description while
+showing the relation between commits.
+
+The second subwindow (upper middle) shows who the commit was made by, in this
+Professor Paul Eggert.
+
+The third subwindow (upper right) shows when the commit was actually made.
+
+The fourth subwindow (lower left) shows the actual commit file
+
+the fifth subwindow (lower right) shows what files have been changed as a
+result.

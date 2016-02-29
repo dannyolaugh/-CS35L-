@@ -1,0 +1,112 @@
+First I got a copy of the Diffutils repository from the Savannah repository:
+git clone git://git.savannah.gnu.org/diffutils.git
+
+Then I got a log of changes to Diffutils' master branch using "git log" 
+and put the result into a file git-log.txt:
+
+git log > git-log.txt
+
+Then I generated a list of tags using "git tag" and put the result into a
+file git-tags.txt
+
+git tag > git-tag.txt
+
+Then I emacsed into git-log.txt and used C-s to search for the commit
+entitled "maint: quote 'like this' or "like this", not `like this'"
+The commit was actually entitled:
+
+62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f
+
+In order to generate the patch I typed the following:
+
+git show 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+
+I then switch into version 3.0 by typing:
+
+git checkout v3.0
+
+and then I applied the patch by typing:
+
+patch -p1 < quote-patch.txt
+
+After typing this command, I was prompted to specify which files I wanted to 
+patch and I just kept hitting RETURN until it stopped. However, this was not
+too much of a difficulty because the spec tells you what to do in this
+situation. In order to see what was modified in each of the file I typed
+C-x v=. In order to revert the files back to their original states I
+typed C-xvu from within the file. Then to check which files were modified
+and still had to be reverted I typed the command git status.   
+
+Then , I made modifications to the modified .c files by hand. If the patch
+only changed commented characters, I reverted the file back to the original. 
+If both comments and code were changed, I manually reverted the comments 
+back to how they were while leaving the code. I did this by using the command
+C-x v = which allowed me to see what had been changed in the file. I then
+used C-c C-a in order the modify the hunks that needed to be reverted 
+(comments) while leaving the hunks that did not need to be reverted (actual 
+code). After completing this process I was left with 6 modified files when
+calling git status.These files were:
+
+modified:   src/cmp.c
+	modified:   src/diff.c
+	modified:   src/diff3.c
+	modified:   src/dir.c
+	modified:   src/sdiff.c
+	modified:   src/util.c 
+
+I then, applied the rejected patches to their corresponding .c files by 
+emacsing into the corresponding .rej files to see what patches had been
+rejected and then going to the corresponding portion of code in the 
+.c files and manually changing things. The only .rej files that actually 
+contained rejected patches were src/diff.c.rej and src/diff3.c.rej. Thus,
+the only files I modified were src.diff.c and src/diff3.c
+
+I then removed all of the untracked files by typing:
+
+mv git-log.txt /u/cs/ugrad/olaughli
+mv git-tags.txt /u/cs/ugrad/olaughli
+mv quote-patch.txt /u/cs/ugrad/olaughli
+
+THEN i did:
+git clean -f
+
+I then ran git status and indeed it reported half a dozen modified files:
+	modified:   src/cmp.c
+	modified:   src/diff.c
+	modified:   src/diff3.c
+	modified:   src/dir.c
+	modified:   src/sdiff.c
+	modified:   src/util.c
+
+I then put the output of git diff into quote-3.0-patch.txt by typing:
+emacs quote-3.0-patch.txt
+
+Using the commands described in README-hacking, I built the resulting 
+modified version of Diffutils. I typed the following:
+./bootstrap
+./configure
+make
+
+I then typed:
+
+diff . -
+diff --help
+
+the outpur for diff . - was:
+diff: cannot compare '-' to a directory
+
+for diff --help was very ling but also correct 
+
+In order to do the sanity check I copied the original source code into
+diffutils-3.0 and the patched source code into diffutils-3.0-patch. I
+then ran the diff command as follows:
+
+diffutils-3.0-patch/diff -pru diffutils-3.0 diffutils-3.0-patch
+>quote-3.0-test.txt
+
+Now when I used diff in order to compare quote-3.0-test.txt and
+quote-3.0-patch.txt I found that the files are NOT identical. However
+these differences are innocuous because they simply lie in differences
+between backticks and single quotes that our patch helped to take care of.
+However these differences lie in some strings which do change the output of
+the program, so it does make a difference, however trivial.

@@ -1,0 +1,73 @@
+#!/bin/bash
+
+export LC_ALL='C'
+set -f    #in order to treat special characters like ? as part of the file name
+IFS=$'\n'
+dir=$1   #first argument
+RESULT=`ls -a $dir | sort`    #sort the results and store in RESULT
+declare -a ARRAY   #making arrays
+declare -a ARRAY2
+declare -a FINAL_ARRAY
+let count1=0
+let count2=0
+for FILE in $RESULT   #visit each file
+do
+    if [ ! -L "$dir/$FILE" ] && [ ! -d "$dir/$FILE" ] #cant be a symlink or dir
+    then
+	if [ ! -r "$dir/$FILE" ]   #can't read 
+	then
+	    echo "Error: cannot read file"
+	    continue
+	fi
+        if [ -f "$dir/$FILE" ]    #if regular file
+        then
+	    echo "$dir/$FILE is a regular file."
+	    if [ ${FILE:0:1} == "." ]   #if first character is a period
+	    then
+		ARRAY[$count1]="$dir/$FILE"  #put into seperate array
+		let count1=count1+1
+	    else
+		ARRAY2[$count2]="$dir/$FILE"   #otherwise put into ARRAY2
+		let count2=count2+1
+	    fi
+	else
+	    echo "$dir/$FILE is NOT a regular file."
+	fi
+    fi
+done
+FINAL_ARRAY=("${ARRAY[@]}" "${ARRAY2[@]}") #put arrays together so periods
+#are on top
+echo "There are $count1+$count2 regular files."
+
+let counter=0
+for file1 in ${FINAL_ARRAY[@]}
+do
+    for file2 in ${FINAL_ARRAY[@]}
+    do
+	if ! [ "$file1" -ef "$file2" ]  #see if the files are different files
+	then
+	    cmp --silent $file1 $file2 
+	    if [ $? -gt 1 ]  # ? uses the content from the last command 
+	    then
+		echo 'error: failed case'
+	    fi
+	    cmp --silent $file1 $file2
+	    if [ $? -eq 0 ]
+	    then
+		echo 'same content'
+		ln -f $file1 $file2
+		#you want to delete the duplicate and make it a hard link
+		#always delete file2 cause it will be later than file 1
+	    fi
+	    cmp --silent $file1 $file2
+	    if [ $? -eq 1 ]
+	    then
+		echo 'different content'
+	    fi
+   
+	else
+	    echo 'same exact file'
+        fi
+	       
+    done
+done

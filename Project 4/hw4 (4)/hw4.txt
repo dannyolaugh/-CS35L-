@@ -1,0 +1,59 @@
+Homework 4:
+after creating a new verion of diffutils, I used "checkout in order to
+change to v3.0.I then ran the patch command in this new branch with my patch
+quote-3.0-patch.txt. I typed the following:
+
+patch -p1 < quote-3.0-patch.txt
+
+I then emacsed into one of the patched files and typed C-x 4 a in order
+to compose an appropriate change log entry for my patch. I only did this
+in one of the six files cause it would have been repetitive to copy and
+paste the same description for each file since you can see the description
+anyway when you C-x 4 a in each file. From the spec I couldn't tell if
+we were supposed to just write for one of the files or for all six so this
+is what I did.
+
+I committed my changes to a new branch by typing:
+
+git add .
+git commit -m "ChangeLog"
+
+I recieved the following output:
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+17 files changed, 10117 insertions(+)
+create mode 100644 quote/quote-3.0-patch.txt
+create mode 100644 quote/src/Makefile.am
+create mode 100644 quote/src/analyze.c
+create mode 100644 quote/src/cmp.c
+create mode 100644 quote/src/context.c
+create mode 100644 quote/src/diff.c
+create mode 100644 quote/src/diff.h
+create mode 100644 quote/src/diff3.c
+create mode 100644 quote/src/dir.c
+create mode 100644 quote/src/ed.c
+create mode 100644 quote/src/ifdef.c
+create mode 100644 quote/src/io.c
+create mode 100644 quote/src/normal.c
+create mode 100644 quote/src/sdiff.c
+create mode 100644 quote/src/side.c
+create mode 100644 quote/src/system.h
+create mode 100644 quote/src/util.c
+
+I then proceeded to format my patch by using the "git format patch" command.
+I typed the following:
+
+git format-patch -1 --stdout > formatted-patch.txt
+
+Next I switched to another new branch of v3.0 and checked my patch by typing:
+
+git am < formatted.patch.txt
+
+After using 'make check' i found that the patch did work without having to
+fix things by hand afterwords. I verified that my ChangeLog entry worked
+by running the command "make distdir" and inspecting the resulting file.
+I proceeded to test my partners patch as well while he tested mine. The
+results verified that his patch worked as well as mine.  

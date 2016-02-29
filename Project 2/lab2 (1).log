@@ -1,0 +1,147 @@
+First I logged into the seasnet server by typing:
+ssh olaughli@lnxsrv07.seas.ucla.edu
+
+I then typed:
+locale
+
+In order to check if LC_CTYPE="C"
+
+This was not the case so i proceeded to type:
+export LC_ALL='C'
+
+I then confirmed that LC_TYPE="C" by typing:
+locale
+
+I sorted the file "words" by typing the following command:
+sort /usr/share/dict/words>words
+
+I then used wget in order to create a text file
+containing the HTML in this assignment's web page
+
+wget http://web.cs.ucla.edu/classes/fall15/cs35L/assign/assign2.html
+
+In order to determine the ouput of the following commands:
+
+tr -c 'A-Za-z' '[\n*]'
+tr -cs 'A-Za-z' '[\n*]'
+tr -cs 'A-Za-z' '[\n*]' | sort
+tr -cs 'A-Za-z' '[\n*]' | sort -u
+tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+tr -cs 'A-Za-z' '[\n*]' | sort -u \ comm -23 - words
+
+I typed the following in order to pipeline the contents
+of assign2.html to the above commands:
+
+cat assign2.html | tr -c 'A-Za-z' '[\n*]'
+-- -c is complement so it will replace everything except letters with a
+newline, I used man tr
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]'
+-- -cs prints out the same output as the -c option, but compresses
+it with only 1 newline for repeated non-letters
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort
+-- -same output as above, except that it is sorted according to ASCII
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u
+-- -same output as above, but it takes away all duplicate words
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+-- -compare the resulting output with that contained in the
+file "words". It will output three seperate columns:
+
+     column 1 (lines unique to assign2.html)
+
+     column 2 (lines unique to words)
+
+     column 3 (lines that appear in both files)
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words
+-- -this does the same as the above command, but removes columns 2 and 3.
+This in effect gives us all the words in "assign2.html" that are not
+words in the english dictionary provided by "words". In order to find
+these answers, I searched the man pages for comm, tr, and sort.
+
+in order to obtain the file hwnwdseng.htm I used wget:
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+
+then to create my buildwords shell script i typed:
+emacs buildwords
+
+I then inserted the following:
+
+sed -e 's/<[^>]*>//g' |   this regex effectively removes html tags
+sed -e '/^\s*$/d' |       this removes all of the blank lines
+sed tr '[:upper:]' '[:lower:]' |  this changed uppercase letter to lowercase
+sed -e "s/\`/\'/g" |       this changed the hawaiian ` to an apostrophe
+sed -e '1,5d' |         this removes the first 5 lines because they were
+                        not relevant to extracting the hawaiian words
+sed -e '425,431d' |   this deletes the lines from 425-431 inclusive
+       		      because they also were not relevant
+sed -e 's/\((.*)\)//g' | this deletes parenthesis and the words between them
+tr "," "\n" |           this replaces commas with newlines
+sed -e 's/\s\+/\n/g' |  this replaces a spaces with newlines
+sed '/[^p^k^m^n^w^l^h^a^e^i^o^u^'\'']/d' | this rejects entries that contain
+    					   non-Hawaiin letters
+sort | uniq       this sorts the words, while removing duplicates
+
+I found this information by searching the man pages for
+commands such as sort, sed, tr, etc. while also learning about
+how to use regular expressions from my ta and the available
+powerpoints
+
+in order to create a file hwords, containing a copy of all the
+Hawaiian words in the tables in "English to Hawaiian" i
+first did the following:
+
+cat hwnwdseng.htm | ./buildwords > hwords
+
+this puts the output of buildwords when run with hwnwdseng.htm as input
+into hwords.
+
+In order to find the number of misspelled hawaiin and english words,
+I ran the last shell command with - hwords instead of - words.
+The number of english words misspelled was given by:
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u |
+-comm -23 -words | wc -l
+
+The number of hawaiian words misspelled was given by:
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u |
+-comm -23 -hwords | wc -l
+
+There were 81 words misspelled in english including wikipedia, td, etc.
+There were 445 misspelled words in hawaiian including: worry, working, etc.
+
+Due to the fact that page was written in english, there were much more
+hawaiian misspelled words than english misspelled words.
+
+Next, in order to find the words that were misspelled in english but
+not hawaiin (ie. hawaiian words) i created two files by typing:
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u |
+comm -23 - hwords>file1
+
+cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u |
+comm -23 - hwords>file2
+
+So...file1 will contain all the words that are misspelled in hawiian
+while file2 contains all the words that are misspelled in english
+
+
+I then typed:
+
+comm -13 file1 file2
+
+This gave me all of the words that were unique to file2 (the english
+misspelled words). Thus, these were only the words that were misspelled
+in english but not hawaiian. I found that 3 words were misspelled in
+english but not hawaiian. They were "halau" "lau" "wiki"
+
+In order to find the words misspelled in hawaiian, but not in english
+(so pretty much everything) i did:
+
+comm -13 file2 file1
+
+some examples of such words are: "multiple" "naming" etc. 

@@ -1,0 +1,37 @@
+results of sfrob performance comparison:
+In order to make a random file with 10000000 bytes I did  the following:
+
+head --bytes=10000000 /dev/urandom > output.txt
+this was on piazza
+
+I used this file for the purpose of testing sfrob sfrobu and sfrobs
+The commands were as follows:
+
+time cat output.txt | ./sfrob | od -ta
+time cat output.txt | ./sfrobs | od -ta
+time cat output.txt | ./sfrobu | od -ta
+
+The respective results were as follows:
+
+
+real	0m25.332s
+user	0m2.912s
+sys	0m5.835s
+
+real	0m21.493s
+user	0m4.244s
+sys	0m2.004s
+
+real	0m27.812s
+user	0m3.896s
+sys	0m5.842s
+
+
+The number of comparison were as follows:
+20  	      47
+700	      1887
+1200          3578
+8000          30933
+10000	      37999
+
+qsort runs at order nlog(n) so therefore this makes sense for the most part 

@@ -1,0 +1,60 @@
+Homework 3 Answer:
+Q1). Brady's patch removed the line "case_long_iso_time_style:"
+because in the original code, there is a for loop with a "goto"
+but this is removed in the patch so it would be confusing to 
+leave the line in the code. However it does not have to be 
+removed. 
+
+Q2). Because the patched version of coreutils-7.6 changed the date 
+display to the traditional unix format, things to watch out for would 
+things that were relient on the date being displayed in the previous
+format. In countries where users don't speak english and don't
+understand English-format dates, new problems would be introduced
+because the user might not recognize the month spellings, however,
+the day and the year would most likely be recognizable. However, it
+seems that the parameter LC_TIME could help set the language, but
+that defeats the purpose of standardization. 
+
+Q3). In order to invoke this script on an empty file like /dev/null, i typed
+the following:
+
+/usr/local/cs/bin/python randline.py -n 3 /dev/null
+
+The resulting output was as follows:
+
+Traceback (most recent call last):
+  File "randline.py", line 70, in <module>
+      main()
+  File "randline.py", line 64, in main
+      sys.stdout.write(generator.chooseline())
+  File "randline.py", line 34, in chooseline
+      return random.choice(self.lines)
+  File "/usr/local/cs/Python-2.7.9/lib/python2.7/random.py",
+  line 275, in choice
+      return seq[int(self.random() * len(seq))]
+      # raises IndexError if seq is empty
+IndexError: list index out of range
+
+Because /dev/null is an empty file it contains 0 lines, the script cannot
+index its contents, thus the index error is generated:
+
+IndexError: list index out of range
+
+Simply put, you cannot possibly find a random line in a file that
+does not contain any lines.
+
+Q4).In order to invoke th script with Python 3 I typed the following:
+
+/usr/local/cs/bin/python3 randline.py -n 3 file
+
+It produced the following output:
+
+  File "randline.py", line 65
+      except IOError as (errno, strerror):
+
+SyntaxError: invalid syntax
+
+Thus, we see that Python 3 has a different syntax than Python 2 so
+an "invalid syntax" exception is thrown because randline.py file
+cannot be interpreted correctly.
+

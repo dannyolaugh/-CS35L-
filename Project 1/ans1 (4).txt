@@ -1,0 +1,210 @@
+1.
+answer: man -K
+explanation: i got this by typing man man and scrolling
+through list of commands and read their explanations
+
+2.
+answer: cp is located: /usr/local/cs/bin/cp
+answer: wc is located: /usr/local/cs/bin/wc
+
+explanation: I got this answer by typing: which cp
+	       	   	       	  	  which wc
+I learned about which under the "man which" page
+
+3.
+answer: find /usr/bin/ -name ? -executable
+/usr/bin/[      ---binary expression evaluator
+/usr/bin/w      ---shows who is logged in and what they are doing
+/usr/bin/X      ---this starts the window server X
+
+explanation: I figured this out by typing "man find" and
+reading about the "-executable" option, the "-name" option,
+and the "?" functionality. The above command effectively
+searches for all executables that have on character names.
+I found the descriptions
+by using "man w" etc...
+
+4.
+answer: This symbolic link runs gcc, a c compiler.
+
+explanation: I used readlink in order to discover that the
+symbolic link runs gcc
+
+5.
+answer:The following letters select certain mode bits
+for the affected users: rwxXst. The (s) functionality
+in particular sets user of group ID on execution.
+g-s takes away the (s) functionality from the group,
+clearing the group id bits. In short,
+it removes the permission the (s) gives.
+
+explanation: i got this by typing: man chmod
+then reading about (s)
+
+6.
+answer: find -mtime -3
+
+explanation: I got this answer by using man find and then
+reading about -mtime. The description included the
+following, "File's data last modified n*24 hours ago.
+
+7.
+answer:I used the command
+find -mtime -3 -type d
+to find the directories modified in the last three days.
+
+explanation: I got this answer by typing
+find -mtime -3 -type d
+to find all of the directories that had been modified
+within the last three days. These commands such as -mtime
+are in the emacs manual, under man find,
+and were discussed in my lab section.
+
+8.
+answer:using the command
+find /usr/bin/ -type l | wc
+I found that there exists 231 symbolic links in the same
+directory as find.
+
+explanation:I found the above options by reading "man find"
+and searching the emacs manual.
+The "l" after type searches for symbolic links while
+wc is word count.
+
+9.
+answer: I found this answer by using the command:
+cd /usr/lib/
+ls -lt
+the oldest regular file is
+sse2
+
+explanation:I read the man page for ls to learn about
+"l" and "t". The "l" flag list files in a long list
+format while the "t" sorts the list according to the
+time last modified with the newest on top.
+
+10.
+answer:locale gets its data from the LC_* environment
+variables.
+
+explanation: My ta Turker discussed this in my Thursday
+lab section and it is included in the wednesday
+powerpoint on ccle.I also read the man pages for locale. 
+
+11.
+answer: The commands that have sort in their names are
+as follows:
+You type M-x ... RET
+(replace elipses with appropriate commands
+below)
+
+Buffer-menu-sort
+sort-columns
+sort-fields
+sort-lines
+sort-numeric-fields
+sort-pages
+sort-paragraphs
+sort-regexp-fields
+tabulated-list-col-sort
+tabulated-list-sort
+
+explanation:I found this answer by using Apropos.
+I typed "C-h a" which allowed me to input the string
+"sort" and proceeded to search for all the emacs
+commands that contained "sort". I found out about
+Apropos by searching in the emacs Help menu and
+selecting "Apropos".
+
+12.
+answer:
+C-a:Move cursor to the beginning of current line
+C-b:Move cursor back one
+C-c:This is not a simple, one character command
+(it prompts for more ex.C-c-)
+C-d:Delete character
+C-e:Move cursor to end of current line
+C-f:Move forward one charcter
+C-g:Signal a 'quit' condition
+C-h:This is not a simple, one character command
+(it prompts for more ex.C-h-)
+C-i:insert TAB
+C-j:Insert a newline
+C-k:Kill the rest of the current line but
+if no nonblanks occur then kill thru newline
+C-l:Move current buffer line to the specified
+window line
+C-m:Insert a newline, and move to left margin
+of the new line if its blank
+C-n:Move cursor vertically down
+C-o:Insert a newline and leave cursor before it
+C-p:Move cursor vertically up
+C-q:Read next input character and insert it
+C-r:Do incremental search backward
+C-s:Search incremental forwards
+C-t:Interchange characters around point,
+(essentially swapping) moving forward one character
+C-u:Begin a numeric argument for the following command
+C-v:Scroll text in the window  up the arg lines,
+or near full screen if no arg.
+C-w:kill/cut text in a region. This
+saves the text in the kill ring.
+C-x:This is not a simple, one character command
+(it prompts C-x-)
+C-y:Paste a stretch of previously killed text
+C-z:Do what had to be done in order
+to suspend the current frame
+
+explanation: I found out what these do by using C-h
+or the help command which allows you to type "C-h" then
+"k" for [key] and the C-[key]. This will tell you what
+C-[key] does. I found this command in the emacs
+manual on the "Help" page.
+
+13.
+answer: You can get rid of a partially typed out
+command or numeric argument by quitting with "C-g".
+"C-g" can also stop a command that is currently
+running and does so in a relatively safe way.
+It is safe cause if you were to quit in the middle
+of lets say a kill command, your text will all
+either be in the buffer or the all in the kill
+ring or possibly both.Sometimes in the middle of
+an incremetal search, you need to use two "C-g"
+characters to leave the search.When "C-g"
+is typed, the variable "quit-flag" is set to "t".
+Furthermore, "C-g" is only executed as a command if
+Emacs is waiting for input. In this
+case the command that is run is "keyboard-quit".
+"C-g" is used in order to cancel a command that
+has not been typed all the way
+within the recursive editing level.
+
+explantion: I found all of this information in
+the Quitting section in the Emacs manual.
+
+14.
+answer:Yanking means reinserting previosly
+killed text. In order to copy or move some text,
+common practice is to kill it and
+then yank it somewhere else.
+
+explantion:I found this answer by typing C-h r
+in Emacs in order to access the Emacs manual.
+Then I searched the "killing" section of the
+manual and pressed enter on "yanking". This gave
+me a description of yanking.
+(emacs)Top > Killing > Yanking
+
+15.
+The ls -l command lists directories and files
+with permissions, dates, and times. The emacs
+dired command (C-x d) lists these same
+directories and files with the addition of files
+that begin with "." These files are often
+configuration files that are not listed when
+using ls -l. I discovered this difference
+by running the ls -l command in linux and
+comparing the resulting output to what I
+obtained by running the dired
+(C-x d) command in Emacs.

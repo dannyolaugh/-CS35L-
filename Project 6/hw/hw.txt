@@ -1,0 +1,37 @@
+Homework 6:
+
+1). If the other teams had really been observing all the bytes going across
+the network, the resulting network would still be secure. This is a result
+of the fact that at the time on interception the bytes had already been
+encrpyted and would thus look like gibberish to the teams observing the
+bytes because they do not have access to the private key.
+
+However, if the other teams had also tapped our keyboards and observed all
+of my team's keystrokes, the resulting network would no longer be secure.
+This is because the other teams would have access to the passphrase we
+chose when generating our keys, allowing them access to our private key,
+thus allowing them to decrypt our bytes. However, it the other teams tapped
+our keyboards after we had already generated our keys, the network would
+be secure because they would have no way of knowing our passphrase.
+
+If I was booting off a USB and the other teams temporarily had physical
+control of the USB, they could access my private key if it was not protected
+by a passphrase. This once again would allow the other
+teams to decrypt our bytes. But, having physical control of the USB would
+not allow the other team to know our passphrase, so if we had generated
+a passphrase to protect out keys, the network would still be secure.
+
+2) The gpg --verify command doesn't really verify that you personally created
+the tar file in question because as a reciever there is no solid way to tell
+that the public key used to verify the signature is actually from
+the expected person. For example, if I were to send a file to my friend,
+somebody could simply intercept the message, sign the document as me,
+and change the document. When the document finally gets to my partner,
+he will use the hacker's public key in order to verify it. This will work, but
+my partner will have no idea that the public key used to verify was not
+actually mine and thus my intended file was not actually recieved.
+In order to solve this problem, you should have a certifcate generated
+by a third-party database. This certificate contains information about the
+sender and cannot really be falsified as it requires proof of identity for
+each person who wishes to obtain a certificate. Thus, you could use
+public keys for the purpose of verifiying someone's identity. 

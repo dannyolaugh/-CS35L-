@@ -1,0 +1,48 @@
+Lab 8 Log:
+
+First I ran the command:
+
+sort --version
+
+in order to make sure that I was using a new enough version of sort.
+Next, I generated a file containing 10,000,000 random double-precision
+floating point numbers by typing:
+
+cat /dev/urandom | od -tf -N 10000000 > output.txt
+
+In order to fomat my file correctly, I typed the following command:
+
+cat output.txt | sed 's/^........//' | sed -e 's/^[ \t]*//' | tr ' ' '\n' |
+sed '/^$/d' > output2.txt
+
+This command does the following:
+
+deletes first eight characters because they are associated with the memory address
+removes all whitespace to the left of the first number on each line
+changes all spaces to newlines
+deletes any blank lines
+
+When running with 1, 2, 4, and 8 threads I obtained the following times:
+
+[olaughli@lnxsrv07 ~]$ time -p sort -g output2.txt > /dev/null
+real 3.93
+user 20.92
+sys 0.07
+
+[olaughli@lnxsrv07 ~]$ time -p sort -g --parallel=2 output2.txt > /dev/null
+real 10.05
+user 19.11
+sys 0.05
+
+[olaughli@lnxsrv07 ~]$ time -p sort -g --parallel=4 output2.txt > /dev/null
+real 5.94
+user 19.97
+sys 0.06
+
+[olaughli@lnxsrv07 ~]$ time -p sort -g --parallel=8 output2.txt > /dev/null
+real 3.85
+user 20.94
+sys 0.07
+
+
+

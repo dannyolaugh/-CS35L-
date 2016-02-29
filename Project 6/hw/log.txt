@@ -1,0 +1,52 @@
+LAB 6:
+
+This lab was performed with my partner, Brian Li. The purpose of this lab
+was to be able to log into my partner's host and run a program there that
+was displayed on my host and vice-versa. This involved securely logging into
+each other's computer.
+
+In order to do this, I set up an account on my partner's host, and he set up
+an account on my host. I used Ubuntu and made sure that I had openssh-server
+and openssh-client installed. I did not have server so I ran the following
+command:
+
+$sudo apt-get install openssh-server
+
+First, I was the server. I generated public and private keys by typing:
+$ssh-keygen
+
+I then created an account for the client on the server by typing:
+$sudo useradd -d /home/partner_brian -m brian
+$sudo passwd brian
+
+Next, I changed ownership and permission on the .ssh directory:
+$sudo chown -R username .ssh
+$sudo chmod 700 .ssh
+
+Brian was the client in this scenario and succeeded in operating on my host.
+
+After this, I was the client and Brian was the server.
+Once again I generated public and private keys by typing:
+$ssh-keygen
+
+I then copied my public key to the server for key-based authentication
+using the server ip address:
+$ssh-copy-id -i danny@10.97.85.180  //UserName set up by brian was danny
+
+Next, I added the private key to the ssh authentication agent:
+$ssh-add
+
+Next I ssh to server by typing:
+$ssh danny@10.97.85.180
+$ssh -X danny@10.97.85.180 (X11 session forwarding)
+
+Then to make sure this worked I ran the command $firefox on the remote host
+and a new firefox page opened. I successfully ran on my partner's host. 
+
+Note* In order to check my IP address so that I could give it to Brian,
+i typed:
+$ifconfig
+
+This displayed current network interface configuration info such as the
+IP address.
+

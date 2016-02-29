@@ -1,0 +1,107 @@
+First I transported the file into the remote desktop by using scp as
+follows:
+
+scp /Users/danolaughlin/Downloads/coreutils-with-bug.tar.gz
+olaughli@lnxsrv.seas.ucla.edu:~
+
+I then untarred the tarball by typing the following:
+tar -zxvf coreutils-with-bug.tar.gz
+
+I attempted to build this old version of coreutils as is by typing:
+./configure
+make
+
+However, there was an error exemplified by the piece of output below:
+
+utimens.h:2:5: error: conflicting types for 'futimens'
+ int futimens (int, char const *, struct timespec const [2]);
+      ^
+In file included from utimecmp.h:25:0,
+                 from utimecmp.c:25:
+/usr/include/sys/stat.h:374:12: note: previous declaration of 'futimens'
+was here
+ extern int futimens (int __fd, __const struct timespec __times[2]) __THROW;
+
+I then applied the renaming patch by first using wget:
+
+wget http://web.cs.ucla.edu/classes/fall15/cs35L/assign/coreutils.diff
+
+I proceeded to move coreutils.diff into coreutils-with-bug and then
+in coreutils-with-bug typed on a new download of coreutils-with-bug
+
+patch -p0 < coreutils.diff
+
+this applied the patch successfully. I then typed ./configure and make to
+build it once more. 
+
+The problem building coreuitls-with-bug as-is was that it confused the
+declarations of futimins as it was declared twice as a function.
+The patch changes one of the function names to coreutils_futimins, thus
+fixing the problem.
+
+Next, I reproduced the problem. I did this by re-doing the steps on the spec
+but with typing the last line as:
+
+TZ=UTC0 /u/cs/ugrad/olaughli/coreutils-with-bug/src/ls -lt --full-time
+wwi-armistice now now1
+
+This resulted in wwi-armistice being outputted as if it was most recent.
+
+I then proceeded to use the degbugger in order to figure out what went wrong.
+To use gdb i typed:
+
+/tmp/tmp.H7J9wfYfyM]$ gdb /u/cs/ugrad/olaughli/coreutils-with-bug/src/ls -l
+--full-time wwi-armistice now now1
+(gdb) run -lt --full-time
+
+What caught my eye initially was a function declaration on line 263
+for a function called sort_files. I proceeded to set a breakpoint
+at the actual function. After setting a breakpoint I realized
+that sort_files called another function called qsort.
+I then set a breakpoint at qsort and painfully stepped through it's
+execution, looking for anything that seemed unusual.
+
+break qsort
+run -lt --full-time
+si    //this allowed me to step through
+
+I found that the following lines were an abberation from the normal
+si output:
+
+timespec_cmp (b=..., a=...) at ../lib/timespec.h:48
+48             int diff = a.tv_sec - b.tv_sec;
+
+After some thought I figured that there might actually be overflow in the
+timespec_cmp function because diff is an int, so if the result of
+a.tv_sec - b.tv_sec could not be supported due to the size restraints of
+int, this would cause a big problem. 
+
+I then proceed to look for this code in ls.c and it was not there, so
+I went into /coreutils-with-bug/lib which contained all of the .h files.
+I then went into timespec.h and found the code identical to the si output.
+
+I changed "int diff" to "signed long long int diff" because that was the
+largest signed declaration that i knew of and added appropriate comparisons
+in order to achieve the correct return value. I then I re-ran Professor
+Eggert's code in the spec and it worked! I found that finding this bug was
+pretty difficult for me because for the first day that I worked on this,
+I was focusing more on the "print" and formatting functions, foolishly
+thinking that the problem was the result of display rather than actual
+miscalculation or overflow. I eventually wisened up though. In order to make
+the patch I typed:
+
+diff -u timespec.h timespec2.h > lab5.diff
+
+I then tried to reproduce the problem in my home directory on the
+SEASnet Linux servers I obtained a strange result. I got that the date
+of wwi -armistice was in 2054..the future. The reason for this is that
+timestamps in linux are measured by the number of seconds passed
+since january 1st 1970. Because the home directory on NFS uses a 32-bit
+unsigned type in order to store the timestamps, but this results in
+timestamps older than jan 1st 1970 being stored as positive when it
+should be recorded as negative. Thus, the seconds were added, and not
+subtracted, resulting in the future date of 2054. This does not happen
+in the /tmp directory because it is on the local file system which uses
+a 32-but signed representation to store timestamps. 
+
+

@@ -1,0 +1,68 @@
+Lab 7 Log:
+
+I first wrote two C transliteration programs called tr2b and tr2u. tr2b
+used getchar and putchar into order to transliterate bytes while tr2u.c used
+read and write to transliterate bytes. I had to implement checks to make sure
+that there was no duplicates in the first argument for tr because you cannot
+map one specific character to different characters. However, I did allow for
+duplicates in the second argument of tr because different characters
+should be able to be mapped to the same character. tr2u.c was the same as
+tr2b.c except that I replaced the instances of getchar and putchar with
+read and write respectively.
+
+
+In order to compare the system calls issued by tr2b and tr2u commands
+I created a file that contained 5 million 1s 
+First I made a program that contained 5 million bytes. I did this using a loop
+and using putchar.
+
+I put these 5 million bytes into a file called anyfile:
+./b > anyfile
+
+strace gave me a list of the instructions that the computer ran. output.txt
+contained the list of what instructions were ran:
+cat anyfile | strace -o output.txt ./tr2b 1 2
+cat anyfile | strace -o output.txt ./tr2u 1 2
+
+Next, i did the same thing but copied one file to another:
+cat anyfile | strace -o output.txt ./tr2b 1 2 > testfile
+cat anyfile | strace -o output.txt ./tr2u 1 2 > testfile
+
+Next, I compared the number of instructions needed in each case by
+typing the following:
+
+wc -l output.txt
+
+I obtained the following results:
+
+tr2b with output to terminal:6135
+tr2b with output to file:10000028
+tr2u with output to terminal:1329
+tr2u with output to file:10000028
+
+Next I used the time command to measure how much faster one program is when
+compared to the other, when copying the same amount of data. I replaced
+strace -o in the above commands with time -p and obtained the following
+results:
+
+cat anyfile | time -p ./tr2b 1 2:
+2real 2.24
+user 0.22
+sys 0.05
+
+cat anyfile | time -p ./tr2u 1 2:
+2real 8.76
+user 0.26
+sys 7.70
+
+cat anyfile | time -p ./tr2b 1 2 > testfile:
+real 0.20
+user 0.11
+sys 0.00
+
+cat anyfile | time -p ./tr2u 1 2 > testfile:
+real 5.48
+user 0.28
+sys 5.11
+
+

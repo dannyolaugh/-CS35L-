@@ -1,0 +1,91 @@
+Lab 3 Log:
+first I scp the tarball into linux
+scp /Users/danolaughlin/Downloads/coreutils-7.6.tar.gz olaughli@lnxsrv.seas.ucla.edu:~
+
+I then untrarred the tarball by typing the following:
+tar -zxvf coreutils-7.6.tar.gzcd
+
+Then
+
+cd coreutils-7.6
+
+Once inside, i made a directory called coreutilsinstall:
+
+mkdir coreutilsinstall
+
+I then went changed into the coreutilsinstalldirectory and typed pwd in order
+to obtain its path:
+
+cd coreutilsinstall
+pwd
+
+I then went back to the previous directory and configured the installation
+into the correct directory:
+cd ..
+./configure --prefix=/u/ce/ugrad/olaughli/coreutils-7.6/coreutilsinstall
+make install
+
+./configure sets up the file for compilation by configuring the correct files
+and checking that everything needed to build the application is in place
+
+make  --compiles the source code but normally requires external libraries
+afer this the application specific executables are created
+
+make install  -- moves the application files to the correct directories
+This has to be done after make because the executables are created.
+
+i typed in ls -l in linux to obtain the correct date display.
+In orded to get the incorrect display, i typed:
+
+cd coreutils-7.6
+cd coreutilsinstall
+ls
+cd bin
+./ls -l   <--runs the ls executable in bin
+
+This produces the incorrect output format of the date displayed as:
+2015-10-15 
+
+In order to apply the patch I found the source file in the src directory.
+I then used vim in order to modify the ls.c file. I applied the patch by 
+removing and adding the lines specified.
+
+In the base directory I ran the "make" command 
+
+The output from running "make" in the source directory was the following
+(excluding entering and leaving notifications):
+
+make  all-recursive  #wants to run on all necessary files
+Making all in lib
+make  all-recursive
+Making all in src
+make  all-am
+  CC     ls.o    #ls is changed, create new object file
+  CCLD   dir
+  CCLD   vdir
+  CCLD   ls
+
+Making all in doc
+Making all in man
+
+  GEN    dir.1
+  GEN    vdir.1
+  GEN    ls.1
+	    
+  Making all in po
+  Making all in tests
+  Making all in gnulib-tests
+  make  all-recursive
+
+make all-recursive, recusively checks all of the files in order to see if
+they should be re-compiled. Those that were not dependent on coreutils did 
+not have to be re-compiled, however those that were dependent needed
+to be recompiled. These included the lib and src folders because this
+is where ls resides. I then used ./ls -l again to make sure the formatting
+was correct and it was. After this, I made a file with a year old time
+stamp by typing 
+
+touch -t 201301251415
+
+I then checked once more that the patch was working properly and
+it was.
